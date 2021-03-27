@@ -16,7 +16,7 @@ class Work:
         client = Client(self.key_api, self.key_secret)
         code = 200
         try:
-            print(client.get_account())
+            getacc = client.get_account()
         except binance.exceptions.BinanceAPIException as e:
             code = e.status_code
         if code!=200:

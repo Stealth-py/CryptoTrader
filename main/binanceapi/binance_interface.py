@@ -3,8 +3,8 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 from tkinter import *
-from config import Binance, API_LIST
-from binance_script import Work
+from config import Binance
+from binanceapi.binance_script import Work
 
 obj = Binance()
 
@@ -34,9 +34,10 @@ class BinanceAPI(Tk):
         def submit():
             self.api_key = e1.get()
             self.secret_key = e2.get()
-            try:
-                w = Work(self.api_key, self.secret_key)
-            except:
+            w = Work(self.api_key, self.secret_key)
+            if w.response_check():
+                self.options_menu()
+            else:
                 self.api_input_page()
 
         l1 = Label(apiframe, height = 1, relief = "groove", text = "API KEY", font = ("helvetica", 10, "bold"))
@@ -49,7 +50,7 @@ class BinanceAPI(Tk):
         e2 = Entry(apiframe, textvariable = self.secret_key, bd = 2, show = "*")
         e2.grid(row = 1, column = 2, padx = 5)
 
-        b = Button(apiframe, text = "Submit", command = lambda: [submit(), apiframe.destroy(), self.geometry("700x500"), self.options_menu()])
+        b = Button(apiframe, text = "Submit", command = lambda: [submit(), apiframe.destroy(), self.geometry("700x500")])
         b.grid(row = 2, column = 1)
 
         apiframe.grid(row = 0, column = 0, sticky = "NESW")
@@ -71,7 +72,7 @@ class BinanceAPI(Tk):
             self.dropchoice = (var1.get())
             print(self.dropchoice)
 
-        OPTIONS = API_LIST
+        OPTIONS = obj.SYMBOLS
 
         l = Label(optsmenu, text = "Choose a symbol you want to perform the following functions for:", relief = "groove", font = ("helvetica", 12, "bold"))
         l.grid(row = 0, sticky = W)
