@@ -1,4 +1,4 @@
-import os,sys,inspect
+import os, sys, inspect, webbrowser
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
@@ -6,22 +6,34 @@ from tkinter import *
 from config import Binance
 from binanceapi.binance_script import Work
 
+help_url = "https://github.com/Stealth-py/CryptoTrader"
 obj = Binance()
 
 class BinanceAPI(Tk):
     def __init__(self):
         Tk.__init__(self)
 
-        l = Label(self, image = PhotoImage("binwp.png"))
-        l.place(x=0, y=0)
+        self.title("Binance API")
 
         self.apichoice = IntVar()
         self.api_key = StringVar()
         self.secret_key = StringVar()
         self.optionchoice = IntVar()
         self.dropchoice = StringVar()
-
+        
+        self.widgets()
         self.api_input_page()
+
+    def widgets(self):
+        """
+            Creates a 'Menu()' object named 'mainmenu'
+            Adds the command 'Help' which, onclick, redirects us to the github repository of this project.
+            Repository: 'https://github.com/Stealth-py/CryptoTrader'
+        """
+
+        mainmenu = Menu(self)
+        mainmenu.add_command(label = "Help", underline=1, command = lambda: webbrowser.open(help_url))
+        self.config(menu = mainmenu)
 
     def api_input_page(self):
         apiframe = Frame(self)
@@ -59,10 +71,19 @@ class BinanceAPI(Tk):
 
     def options_menu(self):
         optsmenu = Frame(self)
+        l = Label(optsmenu, image = PhotoImage("binwp.png"))
+        l.place(x=0, y=0)
+
+        min_, max_ = IntVar(), IntVar()
+        min_.set(1)
+        max_.set(3)
 
         var = IntVar()
+        var.set(-1)
         var1 = StringVar()
         var1.set("Choose")
+
+        OPTIONS = obj.SYMBOLS
 
         def check_radio():
             self.optionchoice = var.get()
@@ -71,8 +92,16 @@ class BinanceAPI(Tk):
         def check_drop():
             self.dropchoice = (var1.get())
             print(self.dropchoice)
+            if self.dropchoice not in OPTIONS or not(max_.get()>=self.optionchoice>=min_.get()):
+                self.options_menu()
+            else:
+                if self.optionchoice==1:
+                    self.enquire_crypt(self.dropchoice)
+                elif self.optionchoice==2:
+                    self.balance()
+                else:
+                    print("TODO: PLOTTING THE DETAILS")
 
-        OPTIONS = obj.SYMBOLS
 
         l = Label(optsmenu, text = "Choose a symbol you want to perform the following functions for:", relief = "groove", font = ("helvetica", 12, "bold"))
         l.grid(row = 0, sticky = W)
@@ -83,7 +112,7 @@ class BinanceAPI(Tk):
         l1 = Label(optsmenu, text = "Choose any of the following options for your selected symbol:", relief = "groove", font = ("helvetica", 12, "bold"))
         l1.grid(row = 2, sticky = W)
 
-        o1 = Radiobutton(optsmenu, text = "Enquire about a specific cryptocurrency", variable=var, value = 1, command = check_radio, anchor="w")
+        o1 = Radiobutton(optsmenu, text = "Enquire about the most recent details of a specific cryptocurrency", variable=var, value = 1, command = check_radio, anchor="w")
         o1.grid(row = 3, sticky = W)
         o2 = Radiobutton(optsmenu, text = "Enquire about your account balance", variable = var, value = 2, command = check_radio, anchor = "w")
         o2.grid(row = 4, sticky = W)
@@ -96,3 +125,38 @@ class BinanceAPI(Tk):
         optsmenu.grid(row = 0, column = 0, sticky = "NESW")
         optsmenu.grid_rowconfigure(0, weight=1)
         optsmenu.grid_columnconfigure(0, weight=1)
+    
+    def enquire_crypt(self, symbol):
+        cryptoenquiryframe = Frame(self)
+        w = Work(self.api_key, self.secret_key)
+        data = w.crypto_details(symbol)
+        l = Label(cryptoenquiryframe, text = f"Details for {symbol}", fg = "red", font = ("helvetica", 15, "bold"))
+        l.pack(side = LEFT)
+        txt_box = Text(cryptoenquiryframe, height = 5, width = 60, fg = "blue")
+        scroll = Scrollbar(cryptoenquiryframe)
+        scroll.pack(side = RIGHT, fill = Y)
+        txt_box.pack(side = LEFT, fill = X)
+        c = 1
+        for key in data:
+            txt_box.insert(END, f"{key} = {data[key]} \n")
+        cryptoenquiryframe.grid(row = 0, column = 0, sticky = "NESW")
+        cryptoenquiryframe.grid_rowconfigure(0, weight=1)
+        cryptoenquiryframe.grid_columnconfigure(0, weight=1)
+
+    def balance(self):
+        balanceframe = Frame(self)
+        w = Work(self.api_key, self.secret_key)
+        balance = w.account_balance()
+        
+        header = Label(balanceframe, text = "Your Account Balance", relief = "ridge", font = ("helvetica", 14, "bold"), fg = "red")
+        header.grid(row = 0, sticky = W)
+
+        c = 1
+        for key in balance:
+            l = Label(balanceframe, text = f"{key} = {balance[key]}", relief = "flat", font = ("helvetica", 12))
+            l.grid(row = c, sticky = W)
+            c+=1
+        
+        balanceframe.grid(row = 0, column = 0, sticky = "NESW")
+        balanceframe.grid_rowconfigure(0, weight = 1)
+        balanceframe.grid_columnconfigure(0, weight = 1)
