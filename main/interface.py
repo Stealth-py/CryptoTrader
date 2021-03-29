@@ -40,10 +40,10 @@ class GUI(Tk):
         home = Frame(self)
         home.configure(background="black")
         var = IntVar(0)
-        
+
         def check():
             self.apichoice = var.get()
-        
+
         def call_appropriate_function():
             try:
                 name = config.API_LIST[self.apichoice - 1]
@@ -60,7 +60,7 @@ class GUI(Tk):
 
         o = Radiobutton(home, text = "Binance API", variable = var, value = 1, command = check, anchor = "w")
         o.grid(row = 1, sticky = W)
-        
+
         b = Button(home, text = "Next", command = lambda: [call_appropriate_function()])
         b.grid(row = 2, column = 1)
 

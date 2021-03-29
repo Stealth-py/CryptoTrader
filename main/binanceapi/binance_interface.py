@@ -130,33 +130,45 @@ class BinanceAPI(Tk):
         cryptoenquiryframe = Frame(self)
         w = Work(self.api_key, self.secret_key)
         data = w.crypto_details(symbol)
+        scrollb = Scrollbar(cryptoenquiryframe)
         l = Label(cryptoenquiryframe, text = f"Details for {symbol}", fg = "red", font = ("helvetica", 15, "bold"))
-        l.pack(side = LEFT)
-        txt_box = Text(cryptoenquiryframe, height = 5, width = 60, fg = "blue")
-        scroll = Scrollbar(cryptoenquiryframe)
-        scroll.pack(side = RIGHT, fill = Y)
-        txt_box.pack(side = LEFT, fill = X)
-        c = 1
+        l.grid(row = 0, sticky=W)
+
+        txt = Text(cryptoenquiryframe)
         for key in data:
-            txt_box.insert(END, f"{key} = {data[key]} \n")
+            txt.insert(END, f"{key} = {data[key]} \n")
+        
+        txt.configure(state = DISABLED, font = ("helvetica", 11), height=25, fg = "blue", relief="sunken")
+        txt.grid(row = 1)
+        scrollb.config(command = txt.yview)
+        scrollb.grid(row = 1, column = 5)
+        
         cryptoenquiryframe.grid(row = 0, column = 0, sticky = "NESW")
-        cryptoenquiryframe.grid_rowconfigure(0, weight=1)
-        cryptoenquiryframe.grid_columnconfigure(0, weight=1)
+        cryptoenquiryframe.grid_rowconfigure(0, weight = 1)
+        cryptoenquiryframe.grid_columnconfigure(0, weight = 1)
 
     def balance(self):
         balanceframe = Frame(self)
         w = Work(self.api_key, self.secret_key)
         balance = w.account_balance()
         
+        scrollb = Scrollbar(balanceframe)
         header = Label(balanceframe, text = "Your Account Balance", relief = "ridge", font = ("helvetica", 14, "bold"), fg = "red")
         header.grid(row = 0, sticky = W)
 
-        c = 1
+        txtb = Text(balanceframe)
         for key in balance:
-            l = Label(balanceframe, text = f"{key} = {balance[key]}", relief = "flat", font = ("helvetica", 12))
-            l.grid(row = c, sticky = W)
-            c+=1
+            txtb.insert(END, f"{key} = {balance[key]} \n")
+        
+        txtb.configure(state = DISABLED, font = ("helvetica", 11), height = 25, fg = "blue", relief = "sunken")
+        txtb.grid(row = 1)
+        scrollb.config(command=txtb.yview)
+        scrollb.grid(row = 1, column = 5)
         
         balanceframe.grid(row = 0, column = 0, sticky = "NESW")
         balanceframe.grid_rowconfigure(0, weight = 1)
         balanceframe.grid_columnconfigure(0, weight = 1)
+
+# if __name__ == "__main__":
+#     b = BinanceAPI()
+#     b.enquire_crypt("ETHBTC")
