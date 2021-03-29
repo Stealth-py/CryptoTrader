@@ -68,8 +68,6 @@ class GUI(Tk):
         home.grid_rowconfigure(0, weight = 1)
         home.grid_columnconfigure(0, weight = 1)
 
-        
-
 if __name__=="__main__":
     app = GUI()
     app.mainloop()
