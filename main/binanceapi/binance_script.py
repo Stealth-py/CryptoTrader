@@ -31,12 +31,12 @@ class Work:
         opts = bina.SYMBOLS
         ticker_data = client.get_ticker()[opts.index(symb)]
         return ticker_data
-    
+
     def account_balance(self):
         client = Client(self.key_api, self.key_secret)
         balance = client.get_account()
         return balance
-    
+
     def hist_data(self, symbol, interval, time):
         client = Client(self.key_api, self.key_secret)
         histodata = client.get_historical_klines(symbol, eval(f"Client.KLINE_INTERVAL_{interval}"), time)

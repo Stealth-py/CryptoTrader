@@ -168,6 +168,9 @@ class BinanceAPI(Tk):
         balanceframe.grid(row = 0, column = 0, sticky = "NESW")
         balanceframe.grid_rowconfigure(0, weight = 1)
         balanceframe.grid_columnconfigure(0, weight = 1)
+    
+    # def plotting(self):
+        
 
 # if __name__ == "__main__":
 #     b = BinanceAPI()
