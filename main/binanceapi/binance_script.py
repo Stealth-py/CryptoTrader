@@ -25,7 +25,7 @@ class Work:
             self.key_secret = bina.SECRET_KEY
             return 0
         return 1
-    
+
     def crypto_details(self, symb):
         client = Client(self.key_api, self.key_secret)
         opts = bina.SYMBOLS
@@ -36,7 +36,12 @@ class Work:
         client = Client(self.key_api, self.key_secret)
         balance = client.get_account()
         return balance
+    
+    def hist_data(self, symbol, interval, time):
+        client = Client(self.key_api, self.key_secret)
+        histodata = client.get_historical_klines(symbol, eval(f"Client.KLINE_INTERVAL_{interval}"), time)
+        return histodata
 
-if __name__ == "__main__":
-    w = Work(bina.API_KEY, bina.SECRET_KEY)
-    print(w.crypto_details("ETHBTC"))
+# if __name__ == "__main__":
+#     w = Work(bina.API_KEY, bina.SECRET_KEY)
+#     print(w.hist_data("ETHBTC", "12HOUR"))
