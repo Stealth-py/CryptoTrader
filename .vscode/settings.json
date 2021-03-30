@@ -1,5 +1,5 @@
 {
     "git.ignoreLimitWarning": true,
-    "python.pythonPath": "binbot\\Scripts\\python.exe",
+    "python.pythonPath": "c:\\Neemesh\\Kyode\\Projects\\CryptoTrader\\binbot\\Scripts\\python.exe",
     "python.analysis.extraPaths": ["main", "main\\binanceapi"],
 }
