@@ -170,8 +170,3 @@ class BinanceAPI(Tk):
         balanceframe.grid_columnconfigure(0, weight = 1)
     
     # def plotting(self):
-        
-
-# if __name__ == "__main__":
-#     b = BinanceAPI()
-#     b.enquire_crypt("ETHBTC")
