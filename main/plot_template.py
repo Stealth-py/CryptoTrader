@@ -1,4 +1,5 @@
 import datetime
+from tkinter import font
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.dates as mpl_dates
@@ -34,4 +35,4 @@ def candlestick_plot(data):
     fig.autofmt_xdate()
     fig.tight_layout()
 
-    plt.show()
+    return fig

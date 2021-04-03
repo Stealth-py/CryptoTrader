@@ -41,3 +41,6 @@ class Work:
         client = Client(self.key_api, self.key_secret)
         histodata = client.get_historical_klines(symbol, eval(f"Client.KLINE_INTERVAL_{interval}"), time)
         return histodata
+
+# w = Work(bina.API_KEY, bina.SECRET_KEY)
+# print(w.hist_data("ETHBTC", "12HOUR", "1 month ago"))

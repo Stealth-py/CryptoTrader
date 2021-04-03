@@ -4,7 +4,12 @@ parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 from tkinter import *
 from config import Binance
+from plot_template import candlestick_plot
 from binanceapi.binance_script import Work
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.backend_bases import key_press_handler
+from matplotlib.figure import Figure
+
 
 help_url = "https://github.com/Stealth-py/CryptoTrader"
 obj = Binance()
@@ -37,8 +42,6 @@ class BinanceAPI(Tk):
 
     def api_input_page(self):
         apiframe = Frame(self)
-        l = Label(apiframe, image = PhotoImage("binwp.png"))
-        l.place(x = 0, y = 0, relwidth=1, relheight=1)
 
         e1 = StringVar()
         e2 = StringVar()
@@ -71,8 +74,6 @@ class BinanceAPI(Tk):
 
     def options_menu(self):
         optsmenu = Frame(self)
-        l = Label(optsmenu, image = PhotoImage("binwp.png"))
-        l.place(x=0, y=0)
 
         min_, max_ = IntVar(), IntVar()
         min_.set(1)
@@ -100,7 +101,7 @@ class BinanceAPI(Tk):
                 elif self.optionchoice==2:
                     self.balance()
                 else:
-                    print("TODO: PLOTTING THE DETAILS")
+                    self.plotting()
 
 
         l = Label(optsmenu, text = "Choose a symbol you want to perform the following functions for:", relief = "groove", font = ("helvetica", 12, "bold"))
@@ -169,4 +170,23 @@ class BinanceAPI(Tk):
         balanceframe.grid_rowconfigure(0, weight = 1)
         balanceframe.grid_columnconfigure(0, weight = 1)
     
-    # def plotting(self):
+    def plotting(self, data):
+        ## ADD DROPDOWN MENU FOR OBJECTS AND THEN CHANGE THE FRAME TO PLOTFRAME TO SHOW THE PLOT
+        chooseframe = Frame(self)
+
+        var1 = StringVar("Choose...")
+        OBJECTS = obj.historical_kline_intervals
+
+        plotframe = Frame(self)
+        def plot():
+            fig = candlestick_plot(data)
+            canvas = FigureCanvasTkAgg(fig, plotframe)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side = TOP, fill = BOTH, expand = 1)
+
+            toolbar = NavigationToolbar2Tk(canvas, plotframe)
+            toolbar.update()
+            canvas.get_tk_widget().pack(side = TOP, fill = BOTH, expand = 1)
+
+        plot_button = Button(plotframe, text = "Plot", command = plot, anchor = "center")
+        plot_button.pack()
